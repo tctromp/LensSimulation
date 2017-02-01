@@ -1,5 +1,6 @@
 package org.trompgames.Lens;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -35,11 +36,29 @@ public class LensPanel extends JPanel{
 		//g2d.drawOval(100, 100, 50, 50);
 		//g2.draw(new Ellipse2D.Double(x, y, rectwidth, rectheight));
 		g2d.setColor(Color.BLACK);
-		int focus = 0;
-		for(Lens lens : frame.getHandler().getLenses()){
-			g2d.draw(new Ellipse2D.Double(lens.getLocation().getX() - lens.getWidth()/2, lens.getLocation().getY() - lens.getHeight()/2, lens.getWidth(), lens.getHeight()));	
-			focus = lens.getFocus();
+		
+		midX = frame.getWidth()/2;
+		midY = frame.getHeight()/2;
+		
+		Lens lens = frame.getHandler().getLense();
+		
+		
+		if(lens.getLensType().equals(LensType.CONVEX)){
+			drawConvexLens(g2d, lens);			
 		}
+		
+		
+		
+		
+	}
+	
+	public void drawConvexLens(Graphics2D g2d, Lens lens){
+		
+		lens.setLocation(new Location(midX, midY));
+		g2d.draw(new Ellipse2D.Double(lens.getLocation().getX() - lens.getWidth()/2, lens.getLocation().getY() - lens.getHeight()/2, lens.getWidth(), lens.getHeight()));	
+		int focus = 0;
+
+		focus = lens.getFocus();
 		
 		//xOffset += 1;
 		
@@ -78,40 +97,73 @@ public class LensPanel extends JPanel{
 
 
 		
-		//Line1
+		//Line1 (Center then focus2)
 		g2d.setColor(Color.RED);
 		g2d.drawLine(xLoc, yLoc, midX, yLoc);
 		
-		double m = (1.0 * focus2Loc.getY() - yLoc)/(1.0 * focus2Loc.getX() - midX);
-		int x = frame.getWidth();
-		int y = (int) (m*(x - midX) + yLoc);
+		double m1 = (1.0 * focus2Loc.getY() - yLoc)/(1.0 * focus2Loc.getX() - midX);
+		int x1 = frame.getWidth();
+		int y1 = (int) (m1*(x1 - midX) + yLoc);
 		
-		g2d.drawLine(midX, yLoc, x, y);
+		g2d.drawLine(midX, yLoc, x1, y1);
 
 		
-		//Line2
+		//Line2 (focus1 then center)
 		g2d.setColor(Color.BLUE);
-		m = (1.0 * focus1Loc.getY() - yLoc)/(1.0 * focus1Loc.getX() - xLoc);
-		x = midX;
-		y = (int) (m*(x - focus1Loc.getX()) + focus1Loc.getY());
+		double m2 = (1.0 * focus1Loc.getY() - yLoc)/(1.0 * focus1Loc.getX() - xLoc);
+		int x2 = midX;
+		int y2 = (int) (m2*(x2 - focus1Loc.getX()) + focus1Loc.getY());
 		
-		g2d.drawLine(xLoc, yLoc, x, y);
-		g2d.drawLine(x, y, frame.getWidth(), y);
+		g2d.drawLine(xLoc, yLoc, x2, y2);
+		g2d.drawLine(x2, y2, frame.getWidth(), y2);
+		
+		m2 = 0;
 		
 		
-		//Line3
+		//Line3 (center)
 		g2d.setColor(new Color(0, 255, 0));
-		m = (1.0 * midY - yLoc)/(1.0 * midX - xLoc);
+		double m3 = (1.0 * midY - yLoc)/(1.0 * midX - xLoc);
 		
-		x = frame.getWidth();
-		y = (int) (m*(x - midX) + midY);
+		int x3 = frame.getWidth();
+		int y3 = (int) (m3*(x3 - midX) + midY);
 		
 		
-		g2d.drawLine(xLoc, yLoc, x, y);
+		g2d.drawLine(xLoc, yLoc, x3, y3);
 
-		//g2d.draw(new Ellipse2D.Double(200, 200, 10, 25));
+
+		Location intersection = calculateIntersection(m1, x1, y1, m2, x2, y2);
+		
+		g2d.setColor(Color.BLACK);
+		
+		g2d.drawLine(intersection.getX(), intersection.getY(), intersection.getX(), midY);
+		
+		if(intersection.getX() < midX){
+			float dash1[] = {10.0f};
+			BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
+			
+			g2d.setStroke(dashed);
+			
+			
+			g2d.setColor(Color.RED);
+			g2d.drawLine(intersection.getX(), intersection.getY(), midX, yLoc);
+			
+			g2d.setColor(Color.BLUE);
+			g2d.drawLine(intersection.getX(), intersection.getY(), midX, y2);
+			
+			g2d.setColor(Color.GREEN);
+			g2d.drawLine(intersection.getX(), intersection.getY(), xLoc, yLoc);
+
+		}
 		
 		
+		
+	}
+	
+	public Location calculateIntersection(double m1, int x1, int y1, double m2, int x2, int y2){
+		
+		double x = (m1*x1 - y1 - m2*x2 + y2)/(m1-m2);
+		double y = m1*(x - x1) + y1;
+		return new Location((int) x, (int) y);
 	}
 	
 	

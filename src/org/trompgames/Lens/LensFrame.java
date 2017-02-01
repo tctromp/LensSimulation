@@ -30,13 +30,13 @@ public class LensFrame extends JFrame{
 				System.out.println(event.getKeyCode());
 				int x = handler.getSimObject().getLocation().getX();
 				int y = handler.getSimObject().getLocation().getY();
-				if(event.getKeyCode() == 65){// 65
+				if(event.getKeyCode() == 65 || event.getKeyCode() == 37){// a
 					handler.getSimObject().setLocation(new Location(x-10, y));
-				}else if(event.getKeyCode() == 68){// d
+				}else if(event.getKeyCode() == 68 || event.getKeyCode() == 39){// d
 					handler.getSimObject().setLocation(new Location(x+10, y));
-				}else if(event.getKeyCode() == 87){// w				
+				}else if(event.getKeyCode() == 87 || event.getKeyCode() == 38){// w				
 					handler.getSimObject().setLocation(new Location(x, y-10));
-				}else if(event.getKeyCode() == 83){// s			
+				}else if(event.getKeyCode() == 83 || event.getKeyCode() == 40){// s			
 					handler.getSimObject().setLocation(new Location(x, y+10));
 				}
 				

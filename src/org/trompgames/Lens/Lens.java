@@ -27,6 +27,9 @@ public class Lens {
 		return loc;
 	}
 	
+	public void setLocation(Location loc){
+		this.loc = loc;
+	}
 	
 	
 	public int getWidth(){

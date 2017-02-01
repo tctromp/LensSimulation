@@ -1,22 +1,19 @@
 package org.trompgames.Lens;
 
-import java.util.ArrayList;
-
 import org.trompgames.utils.Location;
 
 public class LensHandler {
 
-	private ArrayList<Lens> lenses = new ArrayList<Lens>();
 	
 	private SimObject obj;
-	
+	private Lens lens;
 	public LensHandler(){
 		
 		LensFrame frame = new LensFrame(this);
 		
 		int y = frame.getHeight()/2;
 		
-		lenses.add(new Lens(LensType.CONVEX, new Location(frame.getWidth()/2, y), 52, 200));//Make sure width and height are even
+		lens = (new Lens(LensType.CONVEX, new Location(frame.getWidth()/2, y), 52, 200));//Make sure width and height are even
 		obj = new SimObject(new Location(150, frame.getHeight()/2), 50);
 		 
 	}
@@ -25,8 +22,8 @@ public class LensHandler {
 		return obj;
 	}
 	
-	public ArrayList<Lens> getLenses(){
-		return lenses;
+	public Lens getLense(){
+		return lens;
 	}
 	
 	
